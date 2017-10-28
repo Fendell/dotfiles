@@ -1,0 +1,180 @@
+* Get emacs for cpp mode for .h files
+  #+BEGIN_SRC emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+  #+END_SRC
+* evil mode
+  #+BEGIN_SRC emacs-lisp
+    ;; (global-evil-leader-mode)
+    ;; (evil-leader/set-leader ",")
+    ;; (evil-leader/set-key
+    ;;  "e" 'find-file
+    ;;  "b" 'switch-to-buffer
+    ;;  "k" 'kill-buffer
+    ;;  "c" 'compile
+    ;;  "o" 'ff-find-other-file
+    ;;  "g" 'magit-status)
+    ;; (use-package evil
+    ;;   :ensure t
+    ;;   :config
+    ;;   (evil-mode t)) 
+  #+END_SRC
+* Environment
+  Dont show toolbar
+  #+BEGIN_SRC emacs-lisp
+    (tool-bar-mode -1)  
+  #+END_SRC
+  Fullscreen emacs at startup
+  #+BEGIN_SRC emacs-lisp
+    ;;(toggle-frame-maximized)
+  #+END_SRC
+  Dont show start help screen
+  #+BEGIN_SRC emacs-lisp
+     (setq inhibit-startup-screen t) 
+  #+END_SRC
+  Load theme and font locking
+  #+BEGIN_SRC emacs-lisp
+    (add-hook 'c++-mode-hook #'modern-c++-font-lock-mode)
+    (require 'powerline)
+    (require 'moe-theme)
+
+    ;; show highlighted buffer-id as decoration (default: nil)
+    (setq moe-theme-highlight-buffer-id t)
+    (moe-theme-set-color 'cyan)
+    (moe-dark)
+  #+END_SRC
+* my key bindings
+  #+BEGIN_SRC emacs-lisp
+    (global-set-key (kbd "C-x g") 'magit-status) ; pull up magit status
+    (global-set-key (kbd "C-c o") 'ff-find-other-file) ; switch between h and cpp files
+    (global-set-key (kbd "C-c m") 'compile) ; compile command
+    (global-set-key (kbd "C-c a") 'org-agenda) ; agenda for org
+    (global-set-key (kbd "C-c c") 'org-capture) ; agenda for org
+
+  #+END_SRC
+* indentation
+  #+BEGIN_SRC emacs-lisp
+    (setq c-basic-offset 4)
+    (setq-default indent-tabs-mode nil)
+     #+END_SRC
+* ggtags
+  #+BEGIN_SRC emacs-lisp
+(require 'ggtags)
+(add-hook 'c-mode-common-hook
+          (lambda ()
+            (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'asm-mode)
+              (ggtags-mode 1))))
+(define-key ggtags-mode-map (kbd "C-c g s") 'ggtags-find-other-symbol)
+(define-key ggtags-mode-map (kbd "C-c g h") 'ggtags-view-tag-history)
+(define-key ggtags-mode-map (kbd "C-c g r") 'ggtags-find-reference)
+(define-key ggtags-mode-map (kbd "C-c g f") 'ggtags-find-file)
+(define-key ggtags-mode-map (kbd "C-c g c") 'ggtags-create-tags)
+(define-key ggtags-mode-map (kbd "C-c g u") 'ggtags-update-tags)
+(define-key ggtags-mode-map (kbd "M-,") 'pop-tag-mark)
+  #+END_SRC
+
+* flycheck
+  #+BEGIN_SRC emacs-lisp
+    (use-package flycheck
+     :ensure t
+     :init (global-flycheck-mode))
+  #+END_SRC
+
+* ido mode
+  #+BEGIN_SRC emacs-lisp
+(ido-mode t)
+  #+END_SRC
+
+* yasnippet
+  #+BEGIN_SRC emacs-lisp
+    (require 'yasnippet)
+    (yas-global-mode 1)
+  #+END_SRC
+* company
+  #+BEGIN_SRC emacs-lisp
+    (use-package company
+      :ensure t
+      :config
+      (add-hook 'after-init-hook 'global-company-mode))
+
+    (use-package company-irony
+      :ensure t
+      :config
+      (add-to-list 'company-backends 'company-irony)) 
+  #+END_SRC
+* Company-jedi
+  #+BEGIN_SRC emacs-lisp
+    (defun my/python-mode-hook ()
+      (add-to-list 'company-backends 'company-jedi))
+
+    (add-hook 'python-mode-hook 'my/python-mode-hook)
+  #+END_SRC
+* irony
+  #+BEGIN_SRC emacs-lisp
+    (use-package irony
+      :ensure t
+    )
+    (add-hook 'c++-mode-hook 'irony-mode)
+    (add-hook 'c-mode-hook 'irony-mode)
+    (add-hook 'objc-mode-hook 'irony-mode)
+    ;; replace the `completion-at-point' and `complete-symbol' bindings in
+    ;; irony-mode's buffers by irony-mode's function
+    (defun my-irony-mode-hook ()
+      (define-key irony-mode-map [remap completion-at-point]
+        'irony-completion-at-point-async)
+      (define-key irony-mode-map [remap complete-symbol]
+        'irony-completion-at-point-async))
+    (add-hook 'irony-mode-hook 'my-irony-mode-hook)
+    (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+  #+END_SRC
+
+* linum mode
+  #+BEGIN_SRC emacs-lisp
+    ;; (add-hook 'c++-mode-hook 'linum-mode)
+    ;; (add-hook 'c-mode-hook 'linum-mode)
+  #+END_SRC
+
+* clang format
+  #+BEGIN_SRC emacs-lisp
+    (require 'clang-format)
+    (global-set-key (kbd "C-c i") 'clang-format-region)
+    (global-set-key (kbd "C-c u") 'clang-format-buffer)
+
+    (setq clang-format-style-option "llvm")
+  #+END_SRC
+* org mode
+#+BEGIN_SRC emacs-lisp
+  (setq org-log-done 'time)
+#+END_SRC
+* org agenda files
+#+BEGIN_SRC emacs-lisp
+  (setq org-agenda-files (list "~/programming/planning/index.org"
+                               "~/org/gcal.org"
+                               "~/programming/planning/tasks.org"))
+#+END_SRC
+* org capture
+#+BEGIN_SRC emacs-lisp
+  (setq org-default-notes-file (concat org-directory "/notes.org"))
+  ;; Templates
+  (setq org-capture-templates
+        '(("t" "Todo" entry (file+headline "~/programming/planning/tasks.org" "Tasks")
+           "* TODO %?\n  %i\n  %a")
+          ("j" "Journal" entry (file+datetree "~/org/journal.org")
+           "* %?\nEntered on %U\n  %i\n  %a")))
+
+#+END_SRC
+* which-key
+#+BEGIN_SRC emacs-lisp
+  (use-package which-key
+    :ensure t
+    :config (which-key-mode))
+#+END_SRC
+* ace-window
+#+BEGIN_SRC emacs-lisp
+  (use-package ace-window
+    :ensure t
+    :init
+    (progn
+      (global-set-key [remap other-window] 'ace-window)
+      ))
+#+END_SRC
+
