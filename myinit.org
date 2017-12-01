@@ -161,16 +161,15 @@
 #+END_SRC
 * org agenda files
 #+BEGIN_SRC emacs-lisp
-  (setq org-agenda-files (list "~/programming/planning/index.org"
-                               "~/org/gcal.org"
-                               "~/programming/planning/tasks.org"))
+  ;;(setq org-agenda-files (list "~/planning/privat.org"
+  ;;                             "~/planning/tasks.org"))
 #+END_SRC
 * org capture
 #+BEGIN_SRC emacs-lisp
   (setq org-default-notes-file (concat org-directory "/notes.org"))
   ;; Templates
   (setq org-capture-templates
-        '(("t" "Todo" entry (file+headline "~/programming/planning/tasks.org" "Tasks")
+        '(("t" "Todo" entry (file+headline "~/planning/tasks.org" "Tasks")
            "* TODO %?\n  %i\n  %a")
           ("j" "Journal" entry (file+datetree "~/org/journal.org")
            "* %?\nEntered on %U\n  %i\n  %a")))
