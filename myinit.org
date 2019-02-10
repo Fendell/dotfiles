@@ -1,3 +1,17 @@
+* Theme and font
+  Setting for emacs looks
+** font
+   #+BEGIN_SRC emacs-lisp
+     (add-to-list 'default-frame-alist
+                  '(font . "DejaVu Sans Mono-13"))
+   #+END_SRC
+** theme
+   #+BEGIN_SRC emacs-lisp
+     (use-package color-theme-modern
+       :ensure t)
+     (load-theme 'cobalt t t)
+     (enable-theme 'cobalt)
+   #+END_SRC
 * Get emacs for cpp mode for .h files
   #+BEGIN_SRC emacs-lisp
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
@@ -31,31 +45,16 @@
   #+BEGIN_SRC emacs-lisp
      (setq inhibit-startup-screen t) 
   #+END_SRC
-  Load theme and font locking
+  Font locking
   #+BEGIN_SRC emacs-lisp
     (add-hook 'c++-mode-hook #'modern-c++-font-lock-mode)
     (use-package powerline
       :ensure t
       )
-    (use-package moe-theme
-      :ensure t
-      :config
-      (progn
-    (setq moe-theme-highlight-buffer-id t)
-    (moe-theme-set-color 'cyan)
-    (moe-dark)))
-
-    ;; show highlighted buffer-id as decoration (default: nil)
-
   #+END_SRC
-* my key bindings
+  Follow symbolic link
   #+BEGIN_SRC emacs-lisp
-    (global-set-key (kbd "C-x g") 'magit-status) ; pull up magit status
-    (global-set-key (kbd "C-c o") 'ff-find-other-file) ; switch between h and cpp files
-    (global-set-key (kbd "C-c m") 'compile) ; compile command
-    (global-set-key (kbd "C-c a") 'org-agenda) ; agenda for org
-    (global-set-key (kbd "C-c c") 'org-capture) ; agenda for org
-
+    (setq vc-follow-symlinks t)
   #+END_SRC
 * indentation
   #+BEGIN_SRC emacs-lisp
@@ -196,3 +195,21 @@
     :ensure t
     )
 #+END_SRC
+* my key bindings
+  #+BEGIN_SRC emacs-lisp
+    (global-set-key (kbd "C-x g") 'magit-status) ; pull up magit status
+    (global-set-key (kbd "C-c o") 'ff-find-other-file) ; switch between h and cpp files
+    (global-set-key (kbd "C-c m") 'compile) ; compile command
+    (global-set-key (kbd "C-c a") 'org-agenda) ; agenda for org
+    (global-set-key (kbd "C-c c") 'org-capture) ; agenda for org
+
+  #+END_SRC
+* projectilen
+  Project browsing
+  #+BEGIN_SRC emacs-lisp
+    (use-package projectile
+      :ensure t
+      :config
+      (projectile-mode +1)
+      (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
+  #+END_SRC
